@@ -54,7 +54,7 @@ namespace UdemyCourse.API.Controllers
             if (region == null)
                 return NotFound();
 
-            RegionDto regionDto = new ()
+            var regionDto = new RegionDto()
             {
                 Id = region.Id,
                 Code = region.Code,
@@ -63,6 +63,35 @@ namespace UdemyCourse.API.Controllers
             };
 
             return Ok(regionDto);
+        }
+
+
+        [HttpPost]
+        public IActionResult Create([FromBody] AddRegionDto regionDto)
+        {
+            var region = new Region()
+            {
+                Id = new Guid(),
+                Code = regionDto.Code,
+                Name = regionDto.Name,
+                RegionImageUrl = regionDto.RegionImageUrl,
+
+            };
+
+            dbContext.Regions.Add(region);
+            dbContext.SaveChanges();
+
+            var newRegionDto= new RegionDto()
+            {
+                Id = region.Id,
+                Code = region.Code,
+                Name = region.Name,
+                RegionImageUrl = region.RegionImageUrl,
+                
+
+            };
+
+            return CreatedAtAction("test",  newRegionDto);
         }
     }
 }
