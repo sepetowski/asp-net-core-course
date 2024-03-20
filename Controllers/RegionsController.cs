@@ -91,7 +91,65 @@ namespace UdemyCourse.API.Controllers
 
             };
 
-            return CreatedAtAction("test",  newRegionDto);
+            return CreatedAtAction(nameof(GetById), new { id = newRegionDto.Id }, newRegionDto);
+        }
+
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionDto regionDto)
+        {
+            var exist = dbContext.Regions.Find(id);
+            if (exist == null)
+                return BadRequest();
+
+           
+            exist.Code = regionDto.Code;
+            exist.Name = regionDto.Name;
+            exist.RegionImageUrl = regionDto.RegionImageUrl;
+              
+            
+            // dont have to do this bcs of exist is being track in db (we dont create new obcjet)
+           // dbContext.Regions.Update(exist);
+            dbContext.SaveChanges();
+
+            var returnedRegion = new RegionDto()
+            {
+                Id = exist.Id,
+                Code = exist.Code,
+                Name = exist.Name,
+                RegionImageUrl = exist.RegionImageUrl,
+            };
+
+
+            return Ok(returnedRegion);
+
+
+        }
+
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public IActionResult Delete([FromRoute] Guid id) {
+
+            var exist = dbContext.Regions.Find(id);
+
+            if (exist == null)
+                return NotFound();
+
+            var deletedRegionDto = new RegionDto()
+            {
+                Id = exist.Id,
+                Code = exist.Code,
+                Name = exist.Name,
+                RegionImageUrl = exist.RegionImageUrl,
+
+
+            };
+
+            dbContext.Regions.Remove(exist);
+            dbContext.SaveChanges();
+
+            return Ok(deletedRegionDto);
+        
         }
     }
 }
