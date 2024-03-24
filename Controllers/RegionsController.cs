@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UdemyCourse.API.Data;
@@ -14,34 +15,24 @@ namespace UdemyCourse.API.Controllers
     {
         private readonly UdemyCourseDbContext dbContext;
         private readonly IRegionRepository regionRepository;
+        private readonly IMapper mapper;
 
-        public RegionsController(UdemyCourseDbContext dbContext, IRegionRepository regionRepository)
+        public RegionsController(UdemyCourseDbContext dbContext, IRegionRepository regionRepository, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
 
-            //get data from db - Domain models
+
             var regions = await regionRepository.GetAllAsync();
 
-            // map doamin models to DTOs
-            var regionsDto = new List<RegionDto>();
-            foreach (var region in regions)
-            {
-                regionsDto.Add(new RegionDto()
-                {
-                    Id = region.Id,
-                    Code = region.Code,
-                    Name = region.Name,
-                    RegionImageUrl = region.RegionImageUrl
-                });
-            }
+            var regionsDto =mapper.Map<List<RegionDto>>(regions); 
 
-            //return DTOs not Domain model
             return Ok(regionsDto);
         }
 
@@ -50,24 +41,14 @@ namespace UdemyCourse.API.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-
-
             var region = await regionRepository.GetByIdAsync(id);
 
             if (region == null)
                 return NotFound();
 
-            var regionDto = new RegionDto()
-            {
-                Id = region.Id,
-                Code = region.Code,
-                Name = region.Name,
-                RegionImageUrl = region.RegionImageUrl
-            };
+            var regionDto = mapper.Map<RegionDto>(region);
 
             return Ok(regionDto);
-
-
         }
 
 
@@ -75,26 +56,11 @@ namespace UdemyCourse.API.Controllers
         public async Task<IActionResult> Create([FromBody] AddRegionDto regionDto)
         {
 
-            var region = new Region()
-            {
-                Id = new Guid(),
-                Code = regionDto.Code,
-                Name = regionDto.Name,
-                RegionImageUrl = regionDto.RegionImageUrl,
-
-            };
+            var region = mapper.Map<Region>(regionDto);
 
             region = await regionRepository.CreateAsync(region);
 
-            var newRegionDto = new RegionDto()
-            {
-                Id = region.Id,
-                Code = region.Code,
-                Name = region.Name,
-                RegionImageUrl = region.RegionImageUrl,
-
-
-            };
+            var newRegionDto = mapper.Map<RegionDto>(region);
 
             return CreatedAtAction(nameof(GetById), new { id = newRegionDto.Id }, newRegionDto);
 
@@ -105,28 +71,14 @@ namespace UdemyCourse.API.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionDto regionDto)
         {
 
-            var region = new Region()
-            {
-                Id = id,
-                Code = regionDto.Code,
-                Name = regionDto.Name,
-                RegionImageUrl = regionDto.RegionImageUrl,
-
-            };
+            var region = mapper.Map<Region>(regionDto);
 
             var exist = await regionRepository.UpdateAsync(id, region);
             if (exist == null)
                 return NotFound();
 
 
-            var returnedRegion = new RegionDto()
-            {
-                Id = exist.Id,
-                Code = exist.Code,
-                Name = exist.Name,
-                RegionImageUrl = exist.RegionImageUrl,
-            };
-
+            var returnedRegion = mapper.Map<RegionDto>(exist);
 
             return Ok(returnedRegion);
         }
@@ -141,20 +93,10 @@ namespace UdemyCourse.API.Controllers
             if (exist == null)
                 return NotFound();
 
-            var deletedRegionDto = new RegionDto()
-            {
-                Id = exist.Id,
-                Code = exist.Code,
-                Name = exist.Name,
-                RegionImageUrl = exist.RegionImageUrl,
-
-
-            };
+            var deletedRegionDto = mapper.Map<RegionDto>(exist);
 
 
             return Ok(deletedRegionDto);
-
-
         }
     }
 }

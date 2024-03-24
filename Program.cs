@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UdemyCourse.API.Data;
+using UdemyCourse.API.Mappings;
 using UdemyCourse.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<UdemyCourseDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConection")));
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
