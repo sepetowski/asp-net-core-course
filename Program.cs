@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UdemyCourse.API.Data;
+using UdemyCourse.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<UdemyCourseDbContext>(options => 
 options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConection")));
+
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 
 var app = builder.Build();
 
