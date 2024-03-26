@@ -22,9 +22,38 @@ namespace UdemyCourse.API.Repositories
             return walk;
         }
 
-        public async Task<List<Walk>> GetAllAsync()
+        public async Task<List<Walk>> GetAllAsync(string? filterOn, string? filterQuery, string? sortBy, bool isAscending,
+             int? pageNumber, int? pageSize)
         {
-           return await dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
+
+            var walks = dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+
+            if(!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery)) 
+            {
+
+                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                    walks = walks.Where(walk => walk.Name.Contains(filterQuery));
+            
+            }
+
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+
+                if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                    walks = isAscending ? walks.OrderBy(walk => walk.Name) : walks.OrderByDescending(walk => walk.Name);
+
+            }
+
+      
+            pageNumber ??= 1;
+            pageSize ??= 1000;
+
+            int skipedResults = (pageNumber.Value - 1) * pageSize.Value;
+
+            return await walks.Skip(skipedResults).Take(pageSize.Value).ToListAsync();
+
+
+
         }
 
         public async Task<Walk?> GetByIdAsync(Guid id)

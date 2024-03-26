@@ -22,9 +22,12 @@ namespace UdemyCourse.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] string? filterOn , [FromQuery] string? filterQuery, 
+            [FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+            [FromQuery] int? pageNumber , [FromQuery] int? pageSzie)
         {
-            var walkList = await walkRepository.GetAllAsync();
+            var walkList = await walkRepository.GetAllAsync(filterOn,filterQuery, sortBy,isAscending ?? true,
+                pageNumber ,pageSzie);
 
             var returnWalkList = mapper.Map<List<WalkDto>>(walkList);
 
