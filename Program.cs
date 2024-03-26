@@ -16,6 +16,7 @@ builder.Services.AddDbContext<UdemyCourseDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConection")));
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

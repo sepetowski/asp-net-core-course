@@ -11,6 +11,10 @@ namespace UdemyCourse.API.Mappings
             CreateMap<Region, RegionDto>().ReverseMap();
             CreateMap<AddRegionDto,Region>().ReverseMap();
             CreateMap<UpdateRegionDto, Region>().ReverseMap();
+            CreateMap<AddWalkDto,Walk>().ReverseMap();
+            CreateMap<Walk, WalkDto>().ReverseMap();
+            CreateMap<Difficulty, DifficultyDto>().ReverseMap();
+            CreateMap<UpdateWalkDto, Walk>().ReverseMap();
 
 
         }

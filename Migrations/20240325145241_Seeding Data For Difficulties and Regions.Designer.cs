@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UdemyCourse.API.Data;
 
@@ -11,9 +12,11 @@ using UdemyCourse.API.Data;
 namespace UdemyCourse.API.Migrations
 {
     [DbContext(typeof(UdemyCourseDbContext))]
-    partial class UdemyCourseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240325145241_Seeding Data For Difficulties and Regions")]
+    partial class SeedingDataForDifficultiesandRegions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
